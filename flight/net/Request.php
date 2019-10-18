@@ -9,6 +9,7 @@
 namespace flight\net;
 
 use flight\util\Collection;
+use flight\util\Util;
 
 /**
  * The Request class represents an HTTP request. Data from
@@ -190,6 +191,8 @@ class Request {
             $body = $this->getBody();
             if ($body != '') {
                 $data = json_decode($body, true);
+                /* Sanitize for MongoDB */
+                $data = Util::mongo_sanitize($data);
                 if ($data != null) {
                     $this->data->setData($data);
                 }

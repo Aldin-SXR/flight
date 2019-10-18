@@ -1,8 +1,8 @@
 <?php
-require 'flight/Flight.php';
+require_once 'flight/Flight.php';
 
-Flight::route('/', function(){
-    echo 'hello world!';
+Flight::route('/', function() {
+    echo 'Hello, world!';
 });
 
 Flight::start();
