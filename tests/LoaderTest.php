@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,23 +8,25 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/classes/User.php';
-require_once __DIR__.'/classes/Factory.php';
 
-class LoaderTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/classes/User.php';
+require_once __DIR__ . '/classes/Factory.php';
+
+class LoaderTest extends TestCase {
     /**
      * @var \flight\core\Loader
      */
     private $loader;
 
-    function setUp(){
+    protected function setUp(): void {
         $this->loader = new \flight\core\Loader();
-        $this->loader->autoload(true, __DIR__.'/classes');
+        $this->loader->autoload(true, __DIR__ . '/classes');
     }
 
     // Autoload a class
-    function testAutoload(){
+    function testAutoload() {
         $this->loader->register('tests', 'User');
 
         $test = $this->loader->load('tests');
@@ -33,7 +36,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class
-    function testRegister(){
+    function testRegister() {
         $this->loader->register('a', 'User');
 
         $user = $this->loader->load('a');
@@ -44,7 +47,7 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class with constructor parameters
-    function testRegisterWithConstructor(){
+    function testRegisterWithConstructor() {
         $this->loader->register('b', 'User', array('Bob'));
 
         $user = $this->loader->load('b');
@@ -55,8 +58,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class with initialization
-    function testRegisterWithInitialization(){
-        $this->loader->register('c', 'User', array('Bob'), function($user){
+    function testRegisterWithInitialization() {
+        $this->loader->register('c', 'User', array('Bob'), function ($user) {
             $user->name = 'Fred';
         });
 
@@ -80,8 +83,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     // Gets an object from a factory method
-    function testRegisterUsingCallable(){
-        $this->loader->register('e', array('Factory','create'));
+    function testRegisterUsingCallable() {
+        $this->loader->register('e', array('Factory', 'create'));
 
         $obj = $this->loader->load('e');
 
@@ -101,8 +104,8 @@ class LoaderTest extends PHPUnit_Framework_TestCase
     }
 
     // Gets an object from a callback function
-    function testRegisterUsingCallback(){
-        $this->loader->register('f', function(){
+    function testRegisterUsingCallback() {
+        $this->loader->register('f', function () {
             return Factory::create();
         });
 

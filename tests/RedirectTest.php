@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,24 +8,26 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
 
-class RedirectTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/autoload.php';
+
+class RedirectTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function getBaseUrl($base, $url){
+    function getBaseUrl($base, $url) {
         if ($base != '/' && strpos($url, '://') === false) {
-            $url = preg_replace('#/+#', '/', $base.'/'.$url);
+            $url = preg_replace('#/+#', '/', $base . '/' . $url);
         }
 
         return $url;
     }
 
-    function setUp() {
+    protected function setUp(): void {
         $_SERVER['SCRIPT_NAME'] = '/subdir/index.php';
 
         $this->app = new \flight\Engine();
@@ -32,14 +35,14 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     }
 
     // The base should be the subdirectory
-    function testBase(){
+    function testBase() {
         $base = $this->app->request()->base;
 
         $this->assertEquals('/subdir', $base);
     }
 
     // Absolute URLs should include the base
-    function testAbsoluteUrl(){
+    function testAbsoluteUrl() {
         $url = '/login';
         $base = $this->app->request()->base;
 
@@ -47,7 +50,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     }
 
     // Relative URLs should include the base
-    function testRelativeUrl(){
+    function testRelativeUrl() {
         $url = 'login';
         $base = $this->app->request()->base;
 
@@ -55,7 +58,7 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     }
 
     // External URLs should ignore the base
-    function testHttpUrl(){
+    function testHttpUrl() {
         $url = 'http://www.yahoo.com';
         $base = $this->app->request()->base;
 
@@ -63,12 +66,11 @@ class RedirectTest extends PHPUnit_Framework_TestCase
     }
 
     // Configuration should override derived value
-    function testBaseOverride(){
+    function testBaseOverride() {
         $url = 'login';
         if ($this->app->get('flight.base_url') !== null) {
             $base = $this->app->get('flight.base_url');
-        }
-        else {
+        } else {
             $base = $this->app->request()->base;
         }
 

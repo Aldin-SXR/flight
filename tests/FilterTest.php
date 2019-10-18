@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,31 +8,33 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
 
-class FilterTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/autoload.php';
+
+class FilterTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->app = new \flight\Engine();
     }
 
     // Run before and after filters
     function testBeforeAndAfter() {
-        $this->app->map('hello', function($name){
+        $this->app->map('hello', function ($name) {
             return "Hello, $name!";
         });
 
-        $this->app->before('hello', function(&$params, &$output){
+        $this->app->before('hello', function (&$params, &$output) {
             // Manipulate the parameter
             $params[0] = 'Fred';
         });
 
-        $this->app->after('hello', function(&$params, &$output){
+        $this->app->after('hello', function (&$params, &$output) {
             // Manipulate the output
             $output .= " Have a nice day!";
         });
@@ -43,18 +46,18 @@ class FilterTest extends PHPUnit_Framework_TestCase
 
     // Break out of a filter chain by returning false
     function testFilterChaining() {
-        $this->app->map('bye', function($name){
+        $this->app->map('bye', function ($name) {
             return "Bye, $name!";
         });
 
-        $this->app->before('bye', function(&$params, &$output){
+        $this->app->before('bye', function (&$params, &$output) {
             $params[0] = 'Bob';
         });
-        $this->app->before('bye', function(&$params, &$output){
+        $this->app->before('bye', function (&$params, &$output) {
             $params[0] = 'Fred';
             return false;
         });
-        $this->app->before('bye', function(&$params, &$output){
+        $this->app->before('bye', function (&$params, &$output) {
             $params[0] = 'Ted';
         });
 

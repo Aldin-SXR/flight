@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,10 +8,11 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
+require_once __DIR__ . '/../flight/autoload.php';
 
-class RouterTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+class RouterTest extends TestCase {
     /**
      * @var \flight\net\Router
      */
@@ -26,14 +28,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
      */
     private $dispatcher;
 
-    function setUp(){
+    protected function setUp(): void {
         $this->router = new \flight\net\Router();
         $this->request = new \flight\net\Request();
         $this->dispatcher = new \flight\core\Dispatcher();
     }
 
     // Simple output
-    function ok(){
+    function ok() {
         echo 'OK';
     }
 
@@ -83,7 +85,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Default route
-    function testDefaultRoute(){
+    function testDefaultRoute() {
         $this->router->map('/', array($this, 'ok'));
         $this->request->url = '/';
 
@@ -91,7 +93,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Simple path
-    function testPathRoute(){
+    function testPathRoute() {
         $this->router->map('/path', array($this, 'ok'));
         $this->request->url = '/path';
 
@@ -99,7 +101,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // POST route
-    function testPostRoute(){
+    function testPostRoute() {
         $this->router->map('POST /', array($this, 'ok'));
         $this->request->url = '/';
         $this->request->method = 'POST';
@@ -108,7 +110,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Either GET or POST route
-    function testGetPostRoute(){
+    function testGetPostRoute() {
         $this->router->map('GET|POST /', array($this, 'ok'));
         $this->request->url = '/';
         $this->request->method = 'GET';
@@ -117,7 +119,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Test regular expression matching
-    function testRegEx(){
+    function testRegEx() {
         $this->router->map('/num/[0-9]+', array($this, 'ok'));
         $this->request->url = '/num/1234';
 
@@ -125,8 +127,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Passing URL parameters
-    function testUrlParameters(){
-        $this->router->map('/user/@id', function($id){
+    function testUrlParameters() {
+        $this->router->map('/user/@id', function ($id) {
             echo $id;
         });
         $this->request->url = '/user/123';
@@ -135,8 +137,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Passing URL parameters matched with regular expression
-    function testRegExParameters(){
-        $this->router->map('/test/@name:[a-z]+', function($name){
+    function testRegExParameters() {
+        $this->router->map('/test/@name:[a-z]+', function ($name) {
             echo $name;
         });
         $this->request->url = '/test/abc';
@@ -145,8 +147,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Optional parameters
-    function testOptionalParameters(){
-        $this->router->map('/blog(/@year(/@month(/@day)))', function($year, $month, $day){
+    function testOptionalParameters() {
+        $this->router->map('/blog(/@year(/@month(/@day)))', function ($year, $month, $day) {
             echo "$year,$month,$day";
         });
         $this->request->url = '/blog/2000';
@@ -155,8 +157,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Regex in optional parameters
-    function testRegexOptionalParameters(){
-        $this->router->map('/@controller/@method(/@id:[0-9]+)', function($controller, $method, $id){
+    function testRegexOptionalParameters() {
+        $this->router->map('/@controller/@method(/@id:[0-9]+)', function ($controller, $method, $id) {
             echo "$controller,$method,$id";
         });
         $this->request->url = '/user/delete/123';
@@ -165,8 +167,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Regex in optional parameters
-    function testRegexEmptyOptionalParameters(){
-        $this->router->map('/@controller/@method(/@id:[0-9]+)', function($controller, $method, $id){
+    function testRegexEmptyOptionalParameters() {
+        $this->router->map('/@controller/@method(/@id:[0-9]+)', function ($controller, $method, $id) {
             echo "$controller,$method,$id";
         });
         $this->request->url = '/user/delete/';
@@ -175,7 +177,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Wildcard matching
-    function testWildcard(){
+    function testWildcard() {
         $this->router->map('/account/*', array($this, 'ok'));
         $this->request->url = '/account/123/abc/xyz';
 
@@ -183,8 +185,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Check if route object was passed
-    function testRouteObjectPassing(){
-        $this->router->map('/yes_route', function($route){
+    function testRouteObjectPassing() {
+        $this->router->map('/yes_route', function ($route) {
             $this->assertTrue(is_object($route));
             $this->assertTrue(is_array($route->methods));
             $this->assertTrue(is_array($route->params));
@@ -197,7 +199,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
 
         $this->check();
 
-        $this->router->map('/no_route', function($route = null){
+        $this->router->map('/no_route', function ($route = null) {
             $this->assertTrue(is_null($route));
         }, false);
         $this->request->url = '/no_route';
@@ -206,7 +208,7 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     function testRouteWithParameters() {
-        $this->router->map('/@one/@two', function($one, $two, $route){
+        $this->router->map('/@one/@two', function ($one, $two, $route) {
             $this->assertEquals(sizeof($route->params), 2);
             $this->assertEquals($route->params['one'], $one);
             $this->assertEquals($route->params['two'], $two);
@@ -217,8 +219,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Test splat
-    function testSplatWildcard(){
-        $this->router->map('/account/*', function($route){
+    function testSplatWildcard() {
+        $this->router->map('/account/*', function ($route) {
             echo $route->splat;
         }, true);
         $this->request->url = '/account/456/def/xyz';
@@ -227,8 +229,8 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Test splat without trailing slash
-    function testSplatWildcardTrailingSlash(){
-        $this->router->map('/account/*', function($route){
+    function testSplatWildcardTrailingSlash() {
+        $this->router->map('/account/*', function ($route) {
             echo $route->splat;
         }, true);
         $this->request->url = '/account';
@@ -237,11 +239,11 @@ class RouterTest extends PHPUnit_Framework_TestCase
     }
 
     // Test splat with named parameters
-    function testSplatNamedPlusWildcard(){
-        $this->router->map('/account/@name/*', function($name, $route){
-                echo $route->splat;
-                $this->assertEquals('abc', $name);
-            }, true);
+    function testSplatNamedPlusWildcard() {
+        $this->router->map('/account/@name/*', function ($name, $route) {
+            echo $route->splat;
+            $this->assertEquals('abc', $name);
+        }, true);
         $this->request->url = '/account/abc/456/def/xyz';
 
         $this->check('456/def/xyz');
@@ -264,15 +266,14 @@ class RouterTest extends PHPUnit_Framework_TestCase
         $this->check('404');
     }
 
-    
+
     // Passing URL parameters matched with regular expression for a URL containing Cyrillic letters:
-    function testRegExParametersCyrillic(){
-        $this->router->map('/категория/@name:[абвгдеёжзийклмнопрстуфхцчшщъыьэюя]+', function($name){
+    function testRegExParametersCyrillic() {
+        $this->router->map('/категория/@name:[абвгдеёжзийклмнопрстуфхцчшщъыьэюя]+', function ($name) {
             echo $name;
         });
         $this->request->url = urlencode('/категория/цветя');
 
         $this->check('цветя');
     }
-    
 }

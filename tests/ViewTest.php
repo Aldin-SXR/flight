@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,18 +8,19 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
+require_once __DIR__ . '/../flight/autoload.php';
 
-class ViewTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+class ViewTest extends TestCase {
     /**
      * @var \flight\template\View
      */
     private $view;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->view = new \flight\template\View();
-        $this->view->path = __DIR__.'/views';
+        $this->view->path = __DIR__ . '/views';
     }
 
     // Set template variables

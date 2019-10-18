@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,22 +8,24 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
 
-class AutoloadTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/autoload.php';
+
+class AutoloadTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->app = new \flight\Engine();
-        $this->app->path(__DIR__.'/classes');
+        $this->app->path(__DIR__ . '/classes');
     }
 
     // Autoload a class
-    function testAutoload(){
+    function testAutoload() {
         $this->app->register('user', 'User');
 
         $loaders = spl_autoload_functions();
@@ -35,7 +38,7 @@ class AutoloadTest extends PHPUnit_Framework_TestCase
     }
 
     // Check autoload failure
-    function testMissingClass(){
+    function testMissingClass() {
         $test = null;
         $this->app->register('test', 'NonExistentClass');
 

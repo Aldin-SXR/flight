@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,16 +8,18 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/Flight.php';
 
-class FlightTest extends PHPUnit_Framework_TestCase
-{
-    function setUp() {
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/Flight.php';
+
+class FlightTest extends TestCase {
+    protected function setUp(): void {
         Flight::init();
     }
 
     // Checks that default components are loaded
-    function testDefaultComponents(){
+    function testDefaultComponents() {
         $request = Flight::request();
         $response = Flight::response();
         $router = Flight::router();
@@ -29,7 +32,7 @@ class FlightTest extends PHPUnit_Framework_TestCase
     }
 
     // Test get/set of variables
-    function testGetAndSet(){
+    function testGetAndSet() {
         Flight::set('a', 1);
         $var = Flight::get('a');
 
@@ -50,8 +53,8 @@ class FlightTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class
-    function testRegister(){
-        Flight::path(__DIR__.'/classes');
+    function testRegister() {
+        Flight::path(__DIR__ . '/classes');
 
         Flight::register('user', 'User');
         $user = Flight::user();
@@ -64,8 +67,8 @@ class FlightTest extends PHPUnit_Framework_TestCase
     }
 
     // Map a function
-    function testMap(){
-        Flight::map('map1', function(){
+    function testMap() {
+        Flight::map('map1', function () {
             return 'hello';
         });
 
@@ -76,7 +79,8 @@ class FlightTest extends PHPUnit_Framework_TestCase
 
     // Unmapped method
     function testUnmapped() {
-        $this->setExpectedException('Exception', 'doesNotExist must be a mapped method.');
+        $this->expectException('Exception');
+        $this->expectErrorMessage('doesNotExist must be a mapped method.');
 
         Flight::doesNotExist();
     }

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,23 +8,25 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
-require_once __DIR__.'/classes/Hello.php';
 
-class MapTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/autoload.php';
+require_once __DIR__ . '/classes/Hello.php';
+
+class MapTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->app = new \flight\Engine();
     }
 
     // Map a closure
-    function testClosureMapping(){
-        $this->app->map('map1', function(){
+    function testClosureMapping() {
+        $this->app->map('map1', function () {
             return 'hello';
         });
 
@@ -33,8 +36,8 @@ class MapTest extends PHPUnit_Framework_TestCase
     }
 
     // Map a function
-    function testFunctionMapping(){
-        $this->app->map('map2', function(){
+    function testFunctionMapping() {
+        $this->app->map('map2', function () {
             return 'hello';
         });
 
@@ -44,7 +47,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     }
 
     // Map a class method
-    function testClassMethodMapping(){
+    function testClassMethodMapping() {
         $h = new Hello();
 
         $this->app->map('map3', array($h, 'sayHi'));
@@ -55,7 +58,7 @@ class MapTest extends PHPUnit_Framework_TestCase
     }
 
     // Map a static class method
-    function testStaticClassMethodMapping(){
+    function testStaticClassMethodMapping() {
         $this->app->map('map4', array('Hello', 'sayBye'));
 
         $result = $this->app->map4();
@@ -65,7 +68,8 @@ class MapTest extends PHPUnit_Framework_TestCase
 
     // Unmapped method
     function testUnmapped() {
-        $this->setExpectedException('Exception', 'doesNotExist must be a mapped method.');
+        $this->expectException('Exception');
+        $this->expectErrorMessage('doesNotExist must be a mapped method.');
 
         $this->app->doesNotExist();
     }

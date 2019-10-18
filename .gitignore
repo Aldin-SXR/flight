@@ -1,4 +1,7 @@
+.vscode/
 .idea
 vendor/
 composer.phar
 composer.lock
+.phpunit.result.cache
+tests/build/

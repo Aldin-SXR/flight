@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,18 +8,20 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
+require_once __DIR__ . '/../flight/autoload.php';
 
-class VariableTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+class VariableTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->app = new \flight\Engine();
     }
+
     // Set and get a variable
     function testSetAndGet() {
         $this->app->set('a', 1);

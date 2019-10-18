@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,16 +8,17 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
+require_once __DIR__ . '/../flight/autoload.php';
 
-class RequestTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+class RequestTest extends TestCase {
     /**
      * @var \flight\net\Request
      */
     private $request;
 
-    function setUp() {
+    protected function setUp(): void {
         $_SERVER['REQUEST_URI'] = '/';
         $_SERVER['SCRIPT_NAME'] = '/index.php';
         $_SERVER['REQUEST_METHOD'] = 'GET';

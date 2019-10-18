@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Flight: An extensible micro-framework.
  *
@@ -7,22 +8,24 @@
  */
 
 require_once 'vendor/autoload.php';
-require_once __DIR__.'/../flight/autoload.php';
-require_once __DIR__.'/classes/User.php';
 
-class RegisterTest extends PHPUnit_Framework_TestCase
-{
+use PHPUnit\Framework\TestCase;
+
+require_once __DIR__ . '/../flight/autoload.php';
+require_once __DIR__ . '/classes/User.php';
+
+class RegisterTest extends TestCase {
     /**
      * @var \flight\Engine
      */
     private $app;
 
-    function setUp() {
+    protected function setUp(): void {
         $this->app = new \flight\Engine();
     }
 
     // Register a class
-    function testRegister(){
+    function testRegister() {
         $this->app->register('reg1', 'User');
 
         $user = $this->app->reg1();
@@ -33,7 +36,7 @@ class RegisterTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class with constructor parameters
-    function testRegisterWithConstructor(){
+    function testRegisterWithConstructor() {
         $this->app->register('reg2', 'User', array('Bob'));
 
         $user = $this->app->reg2();
@@ -44,8 +47,8 @@ class RegisterTest extends PHPUnit_Framework_TestCase
     }
 
     // Register a class with initialization
-    function testRegisterWithInitialization(){
-        $this->app->register('reg3', 'User', array('Bob'), function($user){
+    function testRegisterWithInitialization() {
+        $this->app->register('reg3', 'User', array('Bob'), function ($user) {
             $user->name = 'Fred';
         });
 
@@ -69,14 +72,14 @@ class RegisterTest extends PHPUnit_Framework_TestCase
     }
 
     // Map method takes precedence over register
-    function testMapOverridesRegister(){
+    function testMapOverridesRegister() {
         $this->app->register('reg5', 'User');
 
         $user = $this->app->reg5();
 
         $this->assertTrue(is_object($user));
 
-        $this->app->map('reg5', function(){
+        $this->app->map('reg5', function () {
             return 123;
         });
 
